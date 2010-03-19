@@ -2,6 +2,7 @@ from APIApp import APIApp
 
 import math
 import hilbert
+import socket, struct
 
 class spacetime (APIApp):
 
@@ -14,8 +15,29 @@ class spacetime (APIApp):
     def generate_response (self, x, y, z, h):
         return {'spacetime' : { 'x' : x, 'y' : y, 'z' : z, 'id' : h }}
 
-    def generate_response_woe (self, woeid, ts, h):
+class spacetimeWOE (spacetime):
+
+    def generate_response (self, woeid, ts, h):
         return {'spacetime' : { 'woeid' : woeid, 'timestamp' : ts, 'id' : h }}
+
+class spacetimeIP (spacetime):
+
+    def generate_response (self, addr, ts, h):
+        return {'spacetime' : { 'ip' : addr, 'timestamp' : ts, 'id' : h }}
+
+    # http://code.activestate.com/recipes/66517/
+    # {{{ Recipe 66517 (r1): IP address conversion functions with the builtin socket module 
+    # IP address manipulation functions, dressed up a bit
+
+    def iptoint(self, ip):
+        "convert decimal dotted quad string to long integer"
+        return struct.unpack('L', socket.inet_aton(ip))[0]
+
+    def intoip(self, n):
+        "convert long int to dotted quad string"
+        return socket.inet_ntoa(struct.pack('L',n))
+
+
 
 class Main(spacetime):
 
@@ -182,7 +204,7 @@ class Decode(spacetime):
         self.api_ok(self.generate_response(x, y, z, h))
         return
 
-class EncodeWOE(spacetime):
+class EncodeWOE(spacetimeWOE):
 
     def get(self, woeid, ts):
 
@@ -191,10 +213,10 @@ class EncodeWOE(spacetime):
 
         h = hilbert.Hilbert_to_int((woeid, ts))
 
-        self.api_ok(self.generate_response_woe(woeid, ts, h))
+        self.api_ok(self.generate_response(woeid, ts, h))
         return
 
-class DecodeWOE(spacetime):
+class DecodeWOE(spacetimeWOE):
 
     def get(self, h):
 
@@ -202,5 +224,31 @@ class DecodeWOE(spacetime):
 
         woeid, ts = hilbert.int_to_Hilbert(h, 2)
 
-        self.api_ok(self.generate_response_woe(woeid, ts, h))
+        self.api_ok(self.generate_response(woeid, ts, h))
         return
+
+class EncodeIP(spacetimeIP):
+
+    def get(self, addr, ts):
+
+        addr_int = self.iptoint(addr)
+        ts = int(ts)
+
+        h = hilbert.Hilbert_to_int((addr_int, ts))
+
+        self.api_ok(self.generate_response(addr_int, ts, h))
+        return
+
+class DecodeIP(spacetimeIP):
+
+    def get(self, h):
+
+        h = long(h)
+
+        addr_int, ts = hilbert.int_to_Hilbert(h, 2)
+        addr = self.inttoip(addr_int)
+
+        self.api_ok(self.generate_response(addr, ts, h))
+        return
+
+

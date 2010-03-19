@@ -11,8 +11,16 @@ if __name__ == '__main__' :
     ('/', spacetime.Main),
     (r'/encode/(-?\d+(?:\.\d+)?)/(-?\d+(?:\.\d+)?)/(\d+)/?$', spacetime.Encode),
     (r'/decode/(\d+)/?$', spacetime.Decode),
+
     (r'/woe/encode/(\d+)/(\d+)/?$', spacetime.EncodeWOE),
     (r'/woe/decode/(\d+)/?$', spacetime.DecodeWOE),
+
+    # Note the order here seems to matter - something about the encode
+    # regexp confused django/appengine... who knows...
+
+    # These don't actually work yet.
+    # (r'/ip/decode/(\d+)/?$', spacetime.DecodeIP),
+    # (r'/ip/encode/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/(\d+)/?$', spacetime.EncodeIP)
 
     ]
 
