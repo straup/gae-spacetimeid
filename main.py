@@ -15,12 +15,11 @@ if __name__ == '__main__' :
     (r'/woe/encode/(\d+)/(\d+)/?$', spacetime.EncodeWOE),
     (r'/woe/decode/(\d+)/?$', spacetime.DecodeWOE),
 
-    # Note the order here seems to matter - something about the encode
-    # regexp confused django/appengine... who knows...
+    # Note the order here seems to matter - something about the
+    # 'encode' regexp confuses django/appengine... who knows...
 
-    # These don't actually work yet.
-    # (r'/ip/decode/(\d+)/?$', spacetime.DecodeIP),
-    # (r'/ip/encode/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/(\d+)/?$', spacetime.EncodeIP)
+    (r'/ip/decode/(\d+)/?$', spacetime.DecodeIP),
+    (r'/ip/encode/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/(\d+)/?$', spacetime.EncodeIP)
 
     ]
 

@@ -25,20 +25,6 @@ class spacetimeIP (spacetime):
     def generate_response (self, addr, ts, h):
         return {'spacetime' : { 'ip' : addr, 'timestamp' : ts, 'id' : h }}
 
-    # http://code.activestate.com/recipes/66517/
-    # {{{ Recipe 66517 (r1): IP address conversion functions with the builtin socket module 
-    # IP address manipulation functions, dressed up a bit
-
-    def iptoint(self, ip):
-        "convert decimal dotted quad string to long integer"
-        return struct.unpack('L', socket.inet_aton(ip))[0]
-
-    def intoip(self, n):
-        "convert long int to dotted quad string"
-        return socket.inet_ntoa(struct.pack('L',n))
-
-
-
 class Main(spacetime):
 
     def get (self):
@@ -231,12 +217,14 @@ class EncodeIP(spacetimeIP):
 
     def get(self, addr, ts):
 
-        addr_int = self.iptoint(addr)
+        ip = map(int, addr.split('.'))
+
+        addr_int = (ip[0] << 24) | (ip[1] << 16) | (ip[2] << 8) | ip[3]
         ts = int(ts)
 
         h = hilbert.Hilbert_to_int((addr_int, ts))
 
-        self.api_ok(self.generate_response(addr_int, ts, h))
+        self.api_ok(self.generate_response(addr, ts, h))
         return
 
 class DecodeIP(spacetimeIP):
@@ -246,7 +234,7 @@ class DecodeIP(spacetimeIP):
         h = long(h)
 
         addr_int, ts = hilbert.int_to_Hilbert(h, 2)
-        addr = self.inttoip(addr_int)
+        addr = "%d.%d.%d.%d" % ((addr_int >> 24)&0xFF, (addr_int >> 16)&0xFF, (addr_int >> 8)&0xFF, addr_int&0xFF)
 
         self.api_ok(self.generate_response(addr, ts, h))
         return
