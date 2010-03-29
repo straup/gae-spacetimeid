@@ -104,7 +104,22 @@ margin-top:75px;
 </pre>
 </div>
 
-<p style="font-style:italic;">Decoding is the same but just make sure you go to <code>/woe/decode</code>.</p>
+<a name="ip"></a>
+
+<p>It is also possible encode <a href="http://en.wikipedia.org/wiki/IP_address">IP addresses</a>. Here is (more or less) the same corner, at the same time, in IP <q>space</q>:</p>
+
+<div class="request">
+
+<p>GET <a href="http://spacetimeid.appspot.com/ip/encode/173.164.158.185/1268809061">http://spacetimeid.appspot.com/ip/encode/173.164.158.185/1268809061</a></p>
+
+<pre>
+&lt;rsp stat="ok"&gt;
+	&lt;spacetime ip="173.164.158.185" id="2372987648121137443" timestamp="1268809061"/&gt;
+&lt;/rsp&gt;
+</pre>
+</div>
+
+<p style="font-size:small;font-style:italic;">Decoding WOE IDs and IP adddresses the same as decoding coordinates but just make sure you go to the correct endpoint: <code>/woe/decode</code> and <code>/ip/decode</code> respectively.</p>
 
 <a name="details"></a>
 
